@@ -75,6 +75,7 @@ class GerberCairoContext(GerberContext):
             self.surface_buffer = tempfile.NamedTemporaryFile()
             self.surface = cairo.SVGSurface(self.surface_buffer, size_in_pixels[0], size_in_pixels[1])
             self.output_ctx = cairo.Context(self.surface)
+            self.output_ctx.set_antialias(cairo.ANTIALIAS_NONE)
 
     def render_layer(self, layer, filename=None, settings=None, bgsettings=None,
                      verbose=False, bounds=None):
@@ -180,6 +181,7 @@ class GerberCairoContext(GerberContext):
                 msk.surface = cairo.SVGSurface(None, size_in_pixels[0],
                                                size_in_pixels[1])
                 msk.ctx = cairo.Context(msk.surface)
+                msk.ctx.set_antialias(cairo.ANTIALIAS_NONE)
                 msk.ctx.translate(-self.origin_in_pixels[0], -self.origin_in_pixels[1])
                 return msk
 
@@ -532,10 +534,10 @@ class GerberCairoContext(GerberContext):
 
     def new_render_layer(self, color=None, mirror=False):
         size_in_pixels = self.scale_point(self.size_in_inch)
-        matrix = copy.copy(self._xform_matrix)
+        matrix = cairo.Matrix() * self._xform_matrix
         layer = cairo.SVGSurface(None, size_in_pixels[0], size_in_pixels[1])
         ctx = cairo.Context(layer)
-
+        ctx.set_antialias(cairo.ANTIALIAS_NONE)
         if self.invert:
             ctx.set_source_rgba(0.0, 0.0, 0.0, 1.0)
             ctx.set_operator(cairo.OPERATOR_OVER)
@@ -594,7 +596,7 @@ class GerberCairoContext(GerberContext):
                 # caused by flipping the axis.
                 clp.ymin = math.floor(
                     (self.scale[1] * ymin) - math.ceil(self.origin_in_pixels[1]))
-                clp.ymax = math.floor(
+                clp.ymax = math.ceil(
                     (self.scale[1] * ymax) - math.floor(self.origin_in_pixels[1]))
 
                 # Calculate width and height, rounded to the nearest pixel
