@@ -253,7 +253,7 @@ def metric(value):
     value : float
         The equivalent value expressed in millimeters.
     """
-    return value * MILLIMETERS_PER_INCH
+    return round(value * MILLIMETERS_PER_INCH, 4)
 
 
 def inch(value):
@@ -269,7 +269,7 @@ def inch(value):
     value : float
         The equivalent value expressed in inches.
     """
-    return value / MILLIMETERS_PER_INCH
+    return round(value / MILLIMETERS_PER_INCH, 5)
 
 
 def rotate_point(point, angle, center=(0.0, 0.0)):
