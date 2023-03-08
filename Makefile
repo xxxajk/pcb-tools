@@ -1,5 +1,6 @@
 
-PYTHON ?= python
+PYTHON ?= python3
+PIP ?= pip3
 PYTEST ?= pytest
 
 DOC_ROOT = doc
@@ -8,9 +9,11 @@ EXAMPLES = examples
 .PHONY: clean
 clean: doc-clean
 	find . -name '*.pyc' -delete
+	find . -name '*~' -delete
 	rm -rf *.egg-info
 	rm -f .coverage
 	rm -f coverage.xml
+	rm -rf build
 
 .PHONY: test
 test:
@@ -24,7 +27,8 @@ test-coverage:
 
 .PHONY: install
 install:
-	PYTHONPATH=. $(PYTHON) setup.py install
+	#PYTHONPATH=. $(PYTHON) setup.py install <-- wrong! Use newer tools!
+	$(PIP) install .
 
 .PHONY: doc-html
 doc-html:
